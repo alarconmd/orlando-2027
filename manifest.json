@@ -1,0 +1,15 @@
+{
+  "name": "Orlando 2027 · Planificador Familiar Offline",
+  "short_name": "Orlando 2027",
+  "lang": "es",
+  "description": "Planificador de viaje 100% offline: itinerario día a día, actividades, comida, Nochevieja, presupuesto y checklist para 7 personas.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d1117",
+  "theme_color": "#0d1117",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
