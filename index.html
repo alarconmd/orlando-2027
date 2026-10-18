@@ -37,7 +37,7 @@
   <button class="tab" data-tab="compras">🛍️ Compras & Outlets</button>
   <button class="tab" data-tab="prep">📋 Preparación</button>
   <button class="tab" data-tab="presupuesto">💰 Presupuesto</button>
-  <button class="tab" data-tab="miplan">⭐ Mi Plan <span id="plan-count" class="badge">0</span></button>
+  <button class="tab" data-tab="miplan">⭐ Mi Plan <span id="plan-count" class="badge plan-n">0</span></button>
   <button class="tab" data-tab="info">ℹ️ Claves</button>
 </nav>
 
@@ -58,6 +58,39 @@
 <footer class="app-footer">
   <p>⚠️ Precios y horarios son <strong>estimaciones</strong> basadas en patrones históricos (datos a oct-2026). Los horarios exactos de shows y eventos de Nochevieja 2026 se publican ~60 días antes. Verifica en las apps oficiales antes de decidir. Todo funciona 100% offline.</p>
 </footer>
+
+<!-- Navegación inferior estilo app (móvil) -->
+<nav class="mnav" id="mnav" aria-label="Secciones">
+  <button class="mnav-btn active" data-tab="itinerario"><span class="mi">🗓️</span>Día a Día</button>
+  <button class="mnav-btn" data-tab="actividades"><span class="mi">🎢</span>Actividades</button>
+  <button class="mnav-btn" data-tab="comida"><span class="mi">🍗</span>Comida</button>
+  <button class="mnav-btn" data-tab="miplan"><span class="mi">⭐</span>Mi Plan <span class="badge plan-n">0</span></button>
+  <button class="mnav-btn" id="mnav-more"><span class="mi">⋯</span>Más</button>
+</nav>
+
+<!-- Hoja "Más": todas las secciones -->
+<div class="msheet" id="msheet" hidden>
+  <div class="msheet-back" data-sheet-close></div>
+  <div class="msheet-panel" role="dialog" aria-modal="true" aria-label="Todas las secciones">
+    <div class="msheet-head"><strong>📑 Todas las secciones</strong><button class="btn btn-ghost btn-xs" data-sheet-close aria-label="Cerrar">✕</button></div>
+    <div class="msheet-grid">
+      <button class="msheet-item" data-tab="itinerario">🗓️ Día a Día</button>
+      <button class="msheet-item" data-tab="actividades">🎢 Actividades</button>
+      <button class="msheet-item" data-tab="comida">🍗 Comida</button>
+      <button class="msheet-item" data-tab="snacks">☕ Café & Snacks</button>
+      <button class="msheet-item" data-tab="shows">🎭 Shows</button>
+      <button class="msheet-item" data-tab="nye">🎆 Nochevieja</button>
+      <button class="msheet-item" data-tab="compras">🛍️ Compras</button>
+      <button class="msheet-item" data-tab="prep">📋 Preparación</button>
+      <button class="msheet-item" data-tab="presupuesto">💰 Presupuesto</button>
+      <button class="msheet-item" data-tab="miplan">⭐ Mi Plan</button>
+      <button class="msheet-item" data-tab="info">ℹ️ Claves</button>
+    </div>
+  </div>
+</div>
+
+<button class="fab-top" id="fab-top" aria-label="Volver arriba">↑</button>
+
 
 <script src="data.js"></script>
 <script src="app.js"></script>

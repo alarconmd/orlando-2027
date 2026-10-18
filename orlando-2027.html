@@ -277,6 +277,86 @@ html{scroll-behavior:smooth}
 
 @media print{.snack-bar,.qparks{display:none!important}}
 
+/* ====== v8: experiencia móvil estilo app (bottom nav · chips · sheet · FAB) ====== */
+body{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
+.f-tools{display:flex;gap:8px;align-items:center;flex:1 1 100%;flex-wrap:wrap}
+.f-tools input[type=search]{flex:1 1 auto;min-width:0}
+.f-adv{display:contents}
+.fab-top{position:fixed;right:18px;bottom:22px;width:46px;height:46px;border-radius:50%;background:var(--accent2);color:#0a0f22;border:none;font-size:1.25rem;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.45);opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .2s,transform .2s;z-index:110}
+.fab-top.show{opacity:1;visibility:visible;transform:none}
+.mnav{display:none}
+.msheet{position:fixed;inset:0;z-index:200}
+.msheet[hidden]{display:none}
+.msheet-back{position:absolute;inset:0;background:rgba(5,7,15,.62)}
+.msheet-panel{position:absolute;left:0;right:0;bottom:0;background:var(--bg2);border:1px solid var(--border);border-bottom:0;border-radius:18px 18px 0 0;padding:14px 14px calc(16px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 30px rgba(0,0,0,.5);max-height:86vh;overflow-y:auto}
+.msheet-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;font-size:.95rem}
+.msheet-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.msheet-item{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:10px 6px;font-size:.78rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:66px;text-align:center}
+.msheet-item:active{background:var(--card2);transform:scale(.97)}
+.msheet-item.active{border-color:var(--accent);color:var(--accent);font-weight:700;background:rgba(255,179,71,.08)}
+.day-chev{margin-left:auto;color:var(--muted);font-size:.9rem;transition:transform .18s ease;flex:0 0 auto}
+.day-card.collapsed .day-chev{transform:rotate(-90deg)}
+.day-card.collapsed>.day-grid,.day-card.collapsed>.strat-box,.day-card.collapsed>.day-food,.day-card.collapsed>.options{display:none}
+
+/* tablets: barra superior de una sola fila con scroll horizontal */
+@media(max-width:999px){
+  .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;scroll-snap-type:x proximity}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{white-space:nowrap;flex:0 0 auto;scroll-snap-align:center}
+}
+/* móvil: navegación inferior, targets táctiles, filtros plegables, safe area */
+@media(max-width:767px){
+  .tabs{display:none}
+  .mnav{display:flex;position:fixed;left:0;right:0;bottom:0;background:rgba(23,27,46,.97);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:1px solid var(--border);z-index:120;padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -6px 20px rgba(0,0,0,.45)}
+  .mnav-btn{flex:1 1 0;min-width:0;background:none;border:0;border-top:3px solid transparent;color:var(--muted);font-size:.66rem;padding:7px 2px 5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;min-height:56px;position:relative;line-height:1.15}
+  .mnav-btn .mi{font-size:1.15rem;line-height:1}
+  .mnav-btn.active{color:var(--accent);border-top-color:var(--accent);font-weight:700}
+  .mnav-btn .badge{position:absolute;top:3px;right:calc(50% - 26px);margin:0;padding:0 5px;font-size:.6rem}
+  .app-header{padding:12px 14px 8px}
+  h1{font-size:1.16rem}
+  .subtitle{display:block;font-size:.76rem}
+  .header-meta{font-size:.72rem}
+  .header-top .btn{min-height:40px}
+  .group-config{gap:6px 10px;padding:7px 9px;font-size:.78rem;margin-top:8px}
+  .group-config input{width:56px;padding:7px 4px;min-height:40px;font-size:16px}
+  .countdown{font-size:.78rem;padding:7px 10px}
+  main{padding:12px 12px 122px}
+  .app-footer{padding:18px 14px 118px;font-size:.74rem}
+  input,select,textarea{font-size:16px}
+  .filter-bar{position:sticky;top:0;z-index:45;margin:0 -12px 14px;padding:10px 12px;border-left:0;border-right:0;border-top:0;border-radius:0 0 14px 14px}
+  .filter-bar .f-adv{display:none}
+  .filter-bar.open .f-adv{display:contents}
+  .filter-bar label{flex:1 1 calc(50% - 5px);flex-direction:column;align-items:stretch;gap:3px;white-space:normal;font-size:.78rem}
+  .filter-bar label.chk{flex-direction:row;align-items:center;gap:8px}
+  .filter-bar select,.filter-bar input,.filter-bar input[type=search]{width:100%;min-height:44px;font-size:16px}
+  .qparks{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
+  .qparks::-webkit-scrollbar{display:none}
+  .qchip{flex:0 0 auto;min-height:38px;padding:7px 14px;font-size:.8rem;white-space:nowrap}
+  .qp-label{display:none}
+  .btn{min-height:44px;padding:10px 16px;font-size:.88rem}
+  .btn-xs{min-height:38px;padding:7px 12px;font-size:.8rem}
+  .btn-plan{min-height:40px;padding:9px 14px;font-size:.84rem}
+  .btn-pick,.btn-cmp,.btn-strat{min-height:44px}
+  .chip{font-size:.76rem;padding:4px 10px}
+  a.chip{display:inline-flex;align-items:center;min-height:40px;padding:8px 13px;font-size:.82rem;margin:3px 4px 3px 0}
+  .chk-row{min-height:50px;align-items:center;padding:9px 12px}
+  .save-toggle{min-height:44px;white-space:normal}
+  table.timeline,.mini-table,table.data{display:block;overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}
+  .total-bar{bottom:calc(66px + env(safe-area-inset-bottom,0px));padding:12px 14px;font-size:.88rem}
+  .intro-card{padding:13px 14px}
+  .card{padding:14px}
+  .options{grid-template-columns:1fr}
+  .count{font-size:.78rem}
+  .fab-top{bottom:calc(76px + env(safe-area-inset-bottom,0px));right:14px;width:44px;height:44px}
+}
+@media(min-width:768px){[data-ftoggle]{display:none}}
+@media print{
+  .mnav,.msheet,.fab-top{display:none!important}
+  main{padding-bottom:0}
+}
+
+
+
 
 </style>
 </head>
@@ -307,7 +387,7 @@ html{scroll-behavior:smooth}
   <button class="tab" data-tab="compras">🛍️ Compras & Outlets</button>
   <button class="tab" data-tab="prep">📋 Preparación</button>
   <button class="tab" data-tab="presupuesto">💰 Presupuesto</button>
-  <button class="tab" data-tab="miplan">⭐ Mi Plan <span id="plan-count" class="badge">0</span></button>
+  <button class="tab" data-tab="miplan">⭐ Mi Plan <span id="plan-count" class="badge plan-n">0</span></button>
   <button class="tab" data-tab="info">ℹ️ Claves</button>
 </nav>
 
@@ -328,6 +408,39 @@ html{scroll-behavior:smooth}
 <footer class="app-footer">
   <p>⚠️ Precios y horarios son <strong>estimaciones</strong> basadas en patrones históricos (datos a oct-2026). Los horarios exactos de shows y eventos de Nochevieja 2026 se publican ~60 días antes. Verifica en las apps oficiales antes de decidir. Todo funciona 100% offline.</p>
 </footer>
+
+<!-- Navegación inferior estilo app (móvil) -->
+<nav class="mnav" id="mnav" aria-label="Secciones">
+  <button class="mnav-btn active" data-tab="itinerario"><span class="mi">🗓️</span>Día a Día</button>
+  <button class="mnav-btn" data-tab="actividades"><span class="mi">🎢</span>Actividades</button>
+  <button class="mnav-btn" data-tab="comida"><span class="mi">🍗</span>Comida</button>
+  <button class="mnav-btn" data-tab="miplan"><span class="mi">⭐</span>Mi Plan <span class="badge plan-n">0</span></button>
+  <button class="mnav-btn" id="mnav-more"><span class="mi">⋯</span>Más</button>
+</nav>
+
+<!-- Hoja "Más": todas las secciones -->
+<div class="msheet" id="msheet" hidden>
+  <div class="msheet-back" data-sheet-close></div>
+  <div class="msheet-panel" role="dialog" aria-modal="true" aria-label="Todas las secciones">
+    <div class="msheet-head"><strong>📑 Todas las secciones</strong><button class="btn btn-ghost btn-xs" data-sheet-close aria-label="Cerrar">✕</button></div>
+    <div class="msheet-grid">
+      <button class="msheet-item" data-tab="itinerario">🗓️ Día a Día</button>
+      <button class="msheet-item" data-tab="actividades">🎢 Actividades</button>
+      <button class="msheet-item" data-tab="comida">🍗 Comida</button>
+      <button class="msheet-item" data-tab="snacks">☕ Café & Snacks</button>
+      <button class="msheet-item" data-tab="shows">🎭 Shows</button>
+      <button class="msheet-item" data-tab="nye">🎆 Nochevieja</button>
+      <button class="msheet-item" data-tab="compras">🛍️ Compras</button>
+      <button class="msheet-item" data-tab="prep">📋 Preparación</button>
+      <button class="msheet-item" data-tab="presupuesto">💰 Presupuesto</button>
+      <button class="msheet-item" data-tab="miplan">⭐ Mi Plan</button>
+      <button class="msheet-item" data-tab="info">ℹ️ Claves</button>
+    </div>
+  </div>
+</div>
+
+<button class="fab-top" id="fab-top" aria-label="Volver arriba">↑</button>
+
 
 <script>
 /* ORLANDO 2027 · Base de datos offline
@@ -1129,6 +1242,7 @@ try{
 }catch(e){}
 let strat = "garantiza"; // filtro global: 🎯 atracción mayor garantizada vs 📊 mayor cantidad de atracciones
 try{ const st = localStorage.getItem("orlando2027strat"); if(st==="garantiza"||st==="cantidad") strat = st; }catch(e){}
+const fOpen = {act:false, food:false, shows:false, snacks:false}; // panel avanzado de filtros abierto (persiste entre re-renders)
 function saveState(){
   localStorage.setItem("orlando2027group", JSON.stringify(group));
   localStorage.setItem("orlando2027plan", JSON.stringify([...plan]));
@@ -1150,20 +1264,39 @@ function togglePlan(id, btn){
   else{ plan.add(id); btn.classList.add("in-plan"); btn.textContent = "✔ En tu plan"; }
   saveState(); updateBadge(); renderMiPlan();
 }
-function updateBadge(){ const b = $("#plan-count"); if(b) b.textContent = plan.size; }
+function updateBadge(){ const b = $("#plan-count"); if(b) b.textContent = plan.size;
+  document.querySelectorAll(".plan-n").forEach(x=>x.textContent = plan.size); }
 
-/* ---------- tabs ---------- */
-function initTabs(){
-  document.querySelectorAll("#tabs .tab").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      document.querySelectorAll("#tabs .tab").forEach(b=>b.classList.remove("active"));
-      document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
-      btn.classList.add("active");
-      $("#tab-"+btn.dataset.tab).classList.add("active");
-      if(btn.dataset.tab==="miplan") renderMiPlan();
-      window.scrollTo({top:0,behavior:"smooth"});
-    });
+/* ---------- tabs: barra superior + navegación inferior + hoja "Más" (móvil) ---------- */
+const PRIMARY_TABS = ["itinerario","actividades","comida","miplan"];
+function selectTab(name){
+  document.querySelectorAll(".tab,.mnav-btn").forEach(b=>{
+    if(b.dataset && b.dataset.tab===name) b.classList.add("active"); else b.classList.remove("active");
   });
+  const more = $("#mnav-more");
+  if(more){ if(PRIMARY_TABS.indexOf(name)>=0) more.classList.remove("active"); else more.classList.add("active"); }
+  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+  const panel = $("#tab-"+name);
+  if(panel) panel.classList.add("active");
+  if(name==="miplan") renderMiPlan();
+  const sheet = $("#msheet"); if(sheet) sheet.hidden = true;
+  window.scrollTo({top:0,behavior:"smooth"});
+  /* tablets (768-999px): barra superior con scroll horizontal → centra la pestaña activa */
+  if(window.matchMedia && window.matchMedia("(min-width:768px) and (max-width:999px)").matches){
+    const tb = document.querySelector('#tabs .tab[data-tab="'+name+'"]');
+    if(tb && tb.scrollIntoView){ try{ tb.scrollIntoView({block:"nearest",inline:"center"}); }catch(e){} }
+  }
+}
+function initTabs(){
+  const fab = $("#fab-top");
+  if(fab){
+    fab.addEventListener("click", ()=>window.scrollTo({top:0,behavior:"smooth"}));
+    if(typeof window.addEventListener === "function"){
+      window.addEventListener("scroll", ()=>{
+        if((window.scrollY||0) > 450) fab.classList.add("show"); else fab.classList.remove("show");
+      }, {passive:true});
+    }
+  }
 }
 
 /* ---------- configuración de grupo ---------- */
@@ -1216,6 +1349,45 @@ document.addEventListener("click", e=>{
   if(sf){ const m = sf.dataset.strat; if(m==="garantiza"||m==="cantidad"){ strat = m; localStorage.setItem("orlando2027strat", strat); renderItinerario(); } return; }
   const rs = e.target.closest("#reset-alts");
   if(rs){ alts = {}; localStorage.setItem("orlando2027alts","{}"); renderItinerario(); return; }
+  /* ---------- v8 móvil: navegación, hoja Más, filtros (chips/toggle/reset), acordeón de días ---------- */
+  const mr = e.target.closest("#mnav-more");
+  if(mr){ const s = $("#msheet"); if(s) s.hidden = !s.hidden; return; }
+  const sc = e.target.closest("[data-sheet-close]");
+  if(sc){ const s = $("#msheet"); if(s) s.hidden = true; return; }
+  const tbs = e.target.closest("[data-tab]");
+  if(tbs){ selectTab(tbs.dataset.tab); return; }
+  const rr = e.target.closest("[data-reset]");
+  if(rr){
+    const k = rr.dataset.reset;
+    if(k==="act") Object.assign(actF,{park:"",cat:"",age:15,restr:"",thrill:5,sort:"park"});
+    if(k==="food") Object.assign(foodF,{zone:"",service:"",protein:0,sort:"protein",q:""});
+    if(k==="shows") Object.assign(showF,{park:"",type:"",seat:""});
+    if(k==="snacks") Object.assign(snackF,{park:"",tipo:"",hype:false,max:0,q:""});
+    renderActividades(); renderComida(); renderShows(); renderSnacks();
+    return;
+  }
+  const ft = e.target.closest("[data-ftoggle]");
+  if(ft){
+    const bar = ft.closest(".filter-bar");
+    if(bar){
+      const open = !bar.classList.contains("open");
+      const key = (bar.id||"").replace("fb-","");
+      fOpen[key] = open;
+      if(open) bar.classList.add("open"); else bar.classList.remove("open");
+      ft.setAttribute("aria-expanded", String(open));
+    }
+    return;
+  }
+  const ap = e.target.closest("[data-apark]");
+  if(ap){ actF.park = ap.dataset.apark; renderActividades(); return; }
+  const fz = e.target.closest("[data-fzone]");
+  if(fz){ foodF.zone = fz.dataset.fzone; renderComida(); return; }
+  const skp = e.target.closest("[data-showpark]");
+  if(skp){ showF.park = skp.dataset.showpark; renderShows(); return; }
+  const shp = e.target.closest("[data-sfhype]");
+  if(shp){ snackF.hype = !snackF.hype; renderSnacks(); return; }
+  const dh = e.target.closest(".day-head");
+  if(dh){ const card = dh.closest(".day-card"); if(card){ if(card.classList.contains("collapsed")) card.classList.remove("collapsed"); else card.classList.add("collapsed"); } return; }
   const tg = e.target.closest("[data-tabgo]");
   if(tg){ e.preventDefault(); const tb = document.querySelector("#tabs .tab[data-tab=\""+tg.dataset.tabgo+"\"]"); if(tb && tb.click) tb.click(); }
 });
@@ -1257,7 +1429,8 @@ function renderItinerario(){
       <button class="btn btn-strat ${strat==="garantiza"?"on":""}" data-strat="garantiza">🎯 Atracción mayor garantizada</button>
       <button class="btn btn-strat ${strat==="cantidad"?"on":""}" data-strat="cantidad">📊 Mayor cantidad de atracciones</button>
       <span class="sf-hint">Cada modo ordena sus ventanas de MENOR a MAYOR ocupación proyectada: la atracción con fila se ataca cuando la ocupación baja y el pico se absorbe con shows/indoor.</span></div></div>`;
-  DIAS.forEach(d=>{
+  const mobDays = !!(window.matchMedia && window.matchMedia("(max-width:767px)").matches);
+  DIAS.forEach((d,i)=>{
     const hours = Object.entries(d.hours).map(([k,v])=>`<tr><td>${esc(PARQUES[k]||k)}</td><td>${esc(v)}</td></tr>`).join("");
     const events = (d.events||[]).map(e=>`<li>${esc(e)}</li>`).join("");
     const warns = (d.warnings||[]).map(w=>`<li>${esc(w)}</li>`).join("");
@@ -1314,8 +1487,8 @@ function renderItinerario(){
             <ul class="tight">${w.items.map(it=>`<li>${esc(it)}</li>`).join("")}</ul></li>`).join("")}
         </ol>
       </div>` : "";
-    h += `<article class="day-card${d.date===HOY_ISO?" hoy":""}">
-      <header class="day-head"><h3>${esc(d.label)}</h3><span class="theme">${esc(d.theme)}</span>${crowdDots(d.crowd)}${d.date===HOY_ISO?`<span class="chip chip-hoy">📍 HOY</span>`:""}</header>
+    h += `<article class="day-card${d.date===HOY_ISO?" hoy":""}${mobDays&&i>0?" collapsed":""}">
+      <header class="day-head"><h3>${esc(d.label)}</h3><span class="theme">${esc(d.theme)}</span>${crowdDots(d.crowd)}${d.date===HOY_ISO?`<span class="chip chip-hoy">📍 HOY</span>`:""}<span class="day-chev" aria-hidden="true">▾</span></header>
       <div class="day-grid">${occ}
         <div><h5>🕐 Horarios estimados</h5><table class="mini-table">${hours}</table></div>
         <div>${events?`<h5>📌 Eventos</h5><ul class="tight">${events}</ul>`:""}
@@ -1354,18 +1527,25 @@ function actFiltersHTML(){
   const parks = [...new Set(ACTIVIDADES.map(a=>a.park))];
   const cats = [...new Set(ACTIVIDADES.flatMap(a=>a.cat))];
   const restrs = [...new Set(ACTIVIDADES.map(a=>a.restr).filter(Boolean))];
-  return `<div class="filter-bar">
-    <label>Parque <select data-f="park"><option value="">Todos</option>${parks.map(p=>`<option ${actF.park===p?"selected":""} value="${esc(p)}">${esc(PARQUES[p]||p)}</option>`).join("")}</select></label>
-    <label>Tipo <select data-f="cat"><option value="">Todos</option>${cats.map(c=>`<option ${actF.cat===c?"selected":""} value="${esc(c)}">${esc(c)}</option>`).join("")}</select></label>
-    <label>Apto desde <select data-f="age">${[0,3,5,7,10,13,15].map(a=>`<option ${actF.age===a?"selected":""} value="${a}">${a===0?"cualquier edad":a+" años"}</option>`).join("")}</select></label>
-    <label>Restricción <select data-f="restr"><option value="">Todas</option><option value="none" ${actF.restr==="none"?"selected":""}>Sin restricción</option>${restrs.map(r=>`<option ${actF.restr===r?"selected":""} value="${esc(r)}">${esc(r)}</option>`).join("")}</select></label>
-    <label>Emoción máx <select data-f="thrill">${[1,2,3,4,5].map(t=>`<option ${actF.thrill===t?"selected":""} value="${t}">${t}/5</option>`).join("")}</select></label>
-    <label>Ordenar <select data-f="sort">
-      <option value="park" ${actF.sort==="park"?"selected":""}>Por parque</option>
-      <option value="costAsc" ${actF.sort==="costAsc"?"selected":""}>Costo grupo ↑</option>
-      <option value="costDesc" ${actF.sort==="costDesc"?"selected":""}>Costo grupo ↓</option>
-      <option value="thrill" ${actF.sort==="thrill"?"selected":""}>Emoción ↓</option>
-    </select></label>
+  const chips = [{k:"",l:"Todos",n:ACTIVIDADES.length}].concat(parks.map(p=>({k:p,l:PARQUES[p]||p,n:ACTIVIDADES.filter(a=>a.park===p).length})));
+  return `<div class="filter-bar${fOpen.act?" open":""}" id="fb-act">
+    <div class="f-tools">
+      <button class="btn btn-ghost btn-xs" data-ftoggle aria-expanded="${fOpen.act}">⚙️ Filtros</button>
+      <button class="btn btn-ghost btn-xs" data-reset="act">↺ Limpiar</button>
+    </div>
+    <div class="qparks"><span class="qp-label">📍 Parque:</span>${chips.map(c=>`<button class="qchip ${actF.park===c.k?"on":""}" data-apark="${esc(c.k)}">${esc(c.l)} <b>${c.n}</b></button>`).join("")}</div>
+    <div class="f-adv">
+      <label>Tipo <select data-f="cat"><option value="">Todos</option>${cats.map(c=>`<option ${actF.cat===c?"selected":""} value="${esc(c)}">${esc(c)}</option>`).join("")}</select></label>
+      <label>Apto desde <select data-f="age">${[0,3,5,7,10,13,15].map(a=>`<option ${actF.age===a?"selected":""} value="${a}">${a===0?"cualquier edad":a+" años"}</option>`).join("")}</select></label>
+      <label>Restricción <select data-f="restr"><option value="">Todas</option><option value="none" ${actF.restr==="none"?"selected":""}>Sin restricción</option>${restrs.map(r=>`<option ${actF.restr===r?"selected":""} value="${esc(r)}">${esc(r)}</option>`).join("")}</select></label>
+      <label>Emoción máx <select data-f="thrill">${[1,2,3,4,5].map(t=>`<option ${actF.thrill===t?"selected":""} value="${t}">${t}/5</option>`).join("")}</select></label>
+      <label>Ordenar <select data-f="sort">
+        <option value="park" ${actF.sort==="park"?"selected":""}>Por parque</option>
+        <option value="costAsc" ${actF.sort==="costAsc"?"selected":""}>Costo grupo ↑</option>
+        <option value="costDesc" ${actF.sort==="costDesc"?"selected":""}>Costo grupo ↓</option>
+        <option value="thrill" ${actF.sort==="thrill"?"selected":""}>Emoción ↓</option>
+      </select></label>
+    </div>
   </div>`;
 }
 function actCard(a){
@@ -1427,17 +1607,24 @@ const HOY_ISO = (()=>{ const n=new Date(); return n.getFullYear()+"-"+String(n.g
 function foodFiltersHTML(){
   const zones = [...new Set(COMIDA.map(r=>r.zone))];
   const services = [...new Set(COMIDA.map(r=>r.service))];
-  return `<div class="filter-bar">
-    <label>Zona <select data-f="zone"><option value="">Todas</option>${zones.map(z=>`<option ${foodF.zone===z?"selected":""} value="${esc(z)}">${esc(z)}</option>`).join("")}</select></label>
-    <label>Servicio <select data-f="service"><option value="">Todos</option>${services.map(s=>`<option ${foodF.service===s?"selected":""} value="${esc(s)}">${esc(s)}</option>`).join("")}</select></label>
-    <label>Proteína mín <select data-f="protein">${[0,3,4,5].map(p=>`<option ${foodF.protein===p?"selected":""} value="${p}">${p===0?"cualquiera":p+"/5"}</option>`).join("")}</select></label>
-    <label>Ordenar <select data-f="sort">
-      <option value="protein" ${foodF.sort==="protein"?"selected":""}>Proteína/$ ↓</option>
-      <option value="costAsc" ${foodF.sort==="costAsc"?"selected":""}>Costo grupo ↑</option>
-      <option value="costDesc" ${foodF.sort==="costDesc"?"selected":""}>Costo grupo ↓</option>
-      <option value="zone" ${foodF.sort==="zone"?"selected":""}>Por zona</option>
-    </select></label>
-    <label>Buscar <input type="search" data-f="q" value="${esc(foodF.q)}" placeholder="nombre o plato…"></label>
+  const chips = [{k:"",l:"Todas",n:COMIDA.length}].concat(zones.map(z=>({k:z,l:z,n:COMIDA.filter(r=>r.zone===z).length})));
+  return `<div class="filter-bar${fOpen.food?" open":""}" id="fb-food">
+    <div class="f-tools">
+      <input type="search" data-f="q" value="${esc(foodF.q)}" placeholder="🔎 nombre o plato…">
+      <button class="btn btn-ghost btn-xs" data-ftoggle aria-expanded="${fOpen.food}">⚙️ Filtros</button>
+      <button class="btn btn-ghost btn-xs" data-reset="food">↺ Limpiar</button>
+    </div>
+    <div class="qparks"><span class="qp-label">📍 Zona:</span>${chips.map(c=>`<button class="qchip ${foodF.zone===c.k?"on":""}" data-fzone="${esc(c.k)}">${esc(c.l)} <b>${c.n}</b></button>`).join("")}</div>
+    <div class="f-adv">
+      <label>Servicio <select data-f="service"><option value="">Todos</option>${services.map(s=>`<option ${foodF.service===s?"selected":""} value="${esc(s)}">${esc(s)}</option>`).join("")}</select></label>
+      <label>Proteína mín <select data-f="protein">${[0,3,4,5].map(p=>`<option ${foodF.protein===p?"selected":""} value="${p}">${p===0?"cualquiera":p+"/5"}</option>`).join("")}</select></label>
+      <label>Ordenar <select data-f="sort">
+        <option value="protein" ${foodF.sort==="protein"?"selected":""}>Proteína/$ ↓</option>
+        <option value="costAsc" ${foodF.sort==="costAsc"?"selected":""}>Costo grupo ↑</option>
+        <option value="costDesc" ${foodF.sort==="costDesc"?"selected":""}>Costo grupo ↓</option>
+        <option value="zone" ${foodF.sort==="zone"?"selected":""}>Por zona</option>
+      </select></label>
+    </div>
   </div>`;
 }
 function foodCard(r){
@@ -1476,6 +1663,8 @@ function renderComida(){
       const k = e.target.dataset.f;
       foodF[k] = k==="protein" ? +e.target.value : e.target.value;
       renderComida();
+      /* el re-render destruye el input: recupera foco y cursor para seguir escribiendo */
+      if(k==="q"){ const s = document.querySelector('#tab-comida [data-f="q"]'); if(s){ s.focus(); try{ s.setSelectionRange(s.value.length, s.value.length); }catch(err){} } }
     });
   });
 }
@@ -1499,14 +1688,18 @@ function snackFiltersHTML(){
   const parks = SNACK_ORDER.filter(k=>all.some(r=>r.park===k))
     .map(k=>({k, label:k==="Otros"?"🌆 Orlando fuera de parques (hype local)":(PARQUES[k]||k), n:all.filter(r=>r.park===k).length}));
   const types = Object.keys(SNACK_LBL).map(t=>({t,n:all.filter(r=>r.sub===t).length})).filter(x=>x.n>0);
-  return `<div class="filter-bar snack-bar">
-    <label>📍 Dónde estás <select data-sf="park"><option value="">Todos los lugares (${all.length})</option>${parks.map(p=>`<option value="${p.k}" ${snackF.park===p.k?"selected":""}>${esc(p.label)} (${p.n})</option>`).join("")}</select></label>
-    <label>🍭 Tipo <select data-sf="tipo"><option value="">Todo tipo</option>${types.map(t=>`<option value="${t.t}" ${snackF.tipo===t.t?"selected":""}>${SNACK_LBL[t.t]} (${t.n})</option>`).join("")}</select></label>
-    <label>💲 Máx/persona <select data-sf="max">${[[0,"cualquiera"],[6,"hasta $6"],[8,"hasta $8"],[10,"hasta $10"],[14,"hasta $14"]].map(([v,l])=>`<option value="${v}" ${snackF.max===v?"selected":""}>${l}</option>`).join("")}</select></label>
-    <label class="chk"><input type="checkbox" data-sf="hype" ${snackF.hype?"checked":""}> ⭐ Solo viral/hype</label>
-    <label>🔎 <input type="search" data-sf="q" value="${esc(snackF.q)}" placeholder="butterbeer, cookie, poutine…"></label>
-    <button class="btn btn-ghost btn-xs" id="snack-reset">↺ Limpiar</button>
-    <div class="qparks"><span class="qp-label">Atajo (toca tu ubicación):</span><button class="qchip ${!snackF.park?"on":""}" data-spark="">Todos</button>${parks.map(p=>`<button class="qchip ${snackF.park===p.k?"on":""}" data-spark="${p.k}">${esc(p.label)} <b>${p.n}</b></button>`).join("")}</div>
+  return `<div class="filter-bar snack-bar${fOpen.snacks?" open":""}" id="fb-snacks">
+    <div class="f-tools">
+      <input type="search" data-sf="q" value="${esc(snackF.q)}" placeholder="🔎 butterbeer, cookie, poutine…">
+      <button class="btn btn-ghost btn-xs" data-ftoggle aria-expanded="${fOpen.snacks}">⚙️ Filtros</button>
+      <button class="btn btn-ghost btn-xs" data-reset="snacks">↺ Limpiar</button>
+    </div>
+    <div class="qparks"><span class="qp-label">📍 Atajo:</span><button class="qchip ${!snackF.park?"on":""}" data-spark="">Todos</button>${parks.map(p=>`<button class="qchip ${snackF.park===p.k?"on":""}" data-spark="${p.k}">${esc(p.label)} <b>${p.n}</b></button>`).join("")}<button class="qchip ${snackF.hype?"on":""}" data-sfhype>⭐ Solo viral</button></div>
+    <div class="f-adv">
+      <label>📍 Lugar <select data-sf="park"><option value="">Todos los lugares (${all.length})</option>${parks.map(p=>`<option value="${p.k}" ${snackF.park===p.k?"selected":""}>${esc(p.label)} (${p.n})</option>`).join("")}</select></label>
+      <label>🍭 Tipo <select data-sf="tipo"><option value="">Todo tipo</option>${types.map(t=>`<option value="${t.t}" ${snackF.tipo===t.t?"selected":""}>${SNACK_LBL[t.t]} (${t.n})</option>`).join("")}</select></label>
+      <label>💲 Máx/persona <select data-sf="max">${[[0,"cualquiera"],[6,"hasta $6"],[8,"hasta $8"],[10,"hasta $10"],[14,"hasta $14"]].map(([v,l])=>`<option value="${v}" ${snackF.max===v?"selected":""}>${l}</option>`).join("")}</select></label>
+    </div>
   </div>`;
 }
 function renderSnacks(){
@@ -1534,7 +1727,7 @@ function renderSnacks(){
     });
   });
   panel.querySelectorAll("[data-spark]").forEach(b=>b.addEventListener("click",()=>{ snackF.park = b.dataset.spark; renderSnacks(); }));
-  const rs = $("#snack-reset"); if(rs) rs.addEventListener("click",()=>{ snackF.park=""; snackF.tipo=""; snackF.hype=false; snackF.max=0; snackF.q=""; renderSnacks(); });
+  const rs = null; /* reset unificado en data-reset="snacks" (delegación global) */
 }
 
 /* ---------- TAB: SHOWS ---------- */
@@ -1555,10 +1748,16 @@ function renderShows(){
     <p class="tip">💡 ${esc(s.note)}</p></article>`).join("");
   $("#tab-shows").innerHTML = `<div class="intro-card"><h2>🎭 Shows, teatro y música en vivo</h2>
     <p>Horarios TÍPICOS (confirmar el mismo día en la app). Los de teatro = descanso sentado gratis: oro puro en días de 14 horas. Conciertos gratis incluidos en EPCOT, Springs y CityWalk.</p></div>
-    <div class="filter-bar">
-      <label>Parque <select data-f="park"><option value="">Todos</option>${parks.map(p=>`<option ${showF.park===p?"selected":""} value="${esc(p)}">${esc(PARQUES[p]||p)}</option>`).join("")}</select></label>
-      <label>Tipo <select data-f="type"><option value="">Todos</option>${types.map(t=>`<option ${showF.type===t?"selected":""} value="${esc(t)}">${esc(t)}</option>`).join("")}</select></label>
-      <label>Asiento <select data-f="seat"><option value="">Todos</option><option value="si" ${showF.seat==="si"?"selected":""}>Con asiento (descanso)</option><option value="no" ${showF.seat==="no"?"selected":""}>De pie</option></select></label>
+    <div class="filter-bar${fOpen.shows?" open":""}" id="fb-shows">
+      <div class="f-tools">
+        <button class="btn btn-ghost btn-xs" data-ftoggle aria-expanded="${fOpen.shows}">⚙️ Filtros</button>
+        <button class="btn btn-ghost btn-xs" data-reset="shows">↺ Limpiar</button>
+      </div>
+      <div class="qparks"><span class="qp-label">📍 Parque:</span><button class="qchip ${!showF.park?"on":""}" data-showpark="">Todos</button>${parks.map(p=>`<button class="qchip ${showF.park===p?"on":""}" data-showpark="${esc(p)}">${esc(PARQUES[p]||p)}</button>`).join("")}</div>
+      <div class="f-adv">
+        <label>Tipo <select data-f="type"><option value="">Todos</option>${types.map(t=>`<option ${showF.type===t?"selected":""} value="${esc(t)}">${esc(t)}</option>`).join("")}</select></label>
+        <label>Asiento <select data-f="seat"><option value="">Todos</option><option value="si" ${showF.seat==="si"?"selected":""}>Con asiento (descanso)</option><option value="no" ${showF.seat==="no"?"selected":""}>De pie</option></select></label>
+      </div>
     </div>
     <p class="count">${list.length} resultados · 🚶 abre la ruta a pie en Google Maps</p><div class="cards">${cards}</div>`;
   $("#tab-shows").querySelectorAll("[data-f]").forEach(sel=>sel.addEventListener("change", e=>{ showF[e.target.dataset.f]=e.target.value; renderShows(); }));
