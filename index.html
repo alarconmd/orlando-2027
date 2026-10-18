@@ -22,6 +22,9 @@
     <label>Adultos <input type="number" id="g-adults" min="0" max="20" value="4"></label>
     <label>Niños 10+ (pagan adulto) <input type="number" id="g-kids10" min="0" max="20" value="3"></label>
     <label>Niños 3–9 <input type="number" id="g-kids3" min="0" max="20" value="0"></label>
+    <label>📏 Altura de la menor 10+ <input type="number" id="g-h10" min="90" max="200" value="150" title="Centímetros de la niña más baja del grupo (estatura mínima de los rides)"> cm</label>
+    <label>📏 Altura de la menor 3–9 <input type="number" id="g-h3" min="80" max="200" value="110" title="Centímetros del niño más bajo del grupo"> cm</label>
+    <label>🎂 Edad del menor 10+ <input type="number" id="g-ageyoung" min="0" max="17" value="10" title="Edad del niño más joven del grupo 10+ (edad mínima de atracciones)"> años</label>
     <span class="group-total" id="group-total"></span>
   </div>
   <div class="countdown" id="countdown"></div>
@@ -29,6 +32,7 @@
 
 <nav class="tabs" id="tabs">
   <button class="tab active" data-tab="itinerario">🗓️ Día a Día</button>
+  <button class="tab" data-tab="ahora">📍 Ahora</button>
   <button class="tab" data-tab="actividades">🎢 Actividades</button>
   <button class="tab" data-tab="comida">🍗 Comida & Proteína</button>
   <button class="tab" data-tab="snacks">☕ Café & Snacks</button>
@@ -43,6 +47,7 @@
 
 <main id="main">
   <section id="tab-itinerario" class="tab-panel active"></section>
+  <section id="tab-ahora" class="tab-panel"></section>
   <section id="tab-actividades" class="tab-panel"></section>
   <section id="tab-comida" class="tab-panel"></section>
   <section id="tab-snacks" class="tab-panel"></section>
@@ -62,6 +67,7 @@
 <!-- Navegación inferior estilo app (móvil) -->
 <nav class="mnav" id="mnav" aria-label="Secciones">
   <button class="mnav-btn active" data-tab="itinerario"><span class="mi">🗓️</span>Día a Día</button>
+  <button class="mnav-btn" data-tab="ahora"><span class="mi">📍</span>Ahora</button>
   <button class="mnav-btn" data-tab="actividades"><span class="mi">🎢</span>Actividades</button>
   <button class="mnav-btn" data-tab="comida"><span class="mi">🍗</span>Comida</button>
   <button class="mnav-btn" data-tab="miplan"><span class="mi">⭐</span>Mi Plan <span class="badge plan-n">0</span></button>
@@ -75,6 +81,7 @@
     <div class="msheet-head"><strong>📑 Todas las secciones</strong><button class="btn btn-ghost btn-xs" data-sheet-close aria-label="Cerrar">✕</button></div>
     <div class="msheet-grid">
       <button class="msheet-item" data-tab="itinerario">🗓️ Día a Día</button>
+      <button class="msheet-item" data-tab="ahora">📍 Ahora</button>
       <button class="msheet-item" data-tab="actividades">🎢 Actividades</button>
       <button class="msheet-item" data-tab="comida">🍗 Comida</button>
       <button class="msheet-item" data-tab="snacks">☕ Café & Snacks</button>

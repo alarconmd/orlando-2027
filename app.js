@@ -7,11 +7,11 @@ const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>
 const money = n => "$" + Math.round(n).toLocaleString("es-US");
 
 /* ---------- estado: grupo + plan (localStorage) ---------- */
-let group = {adults:4, kids10:3, kids3:0};
+let group = {adults:4, kids10:3, kids3:0, h10:150, h3:110, ageYoung:10};
 let plan = new Set();
 let alts = {}; // fecha -> índice de opción elegida (plan alternativo por día)
 try{
-  const g = JSON.parse(localStorage.getItem("orlando2027group")||"null"); if(g) group = g;
+  const g = JSON.parse(localStorage.getItem("orlando2027group")||"null"); if(g) group = Object.assign({h10:150,h3:110,ageYoung:10}, g);
   const p = JSON.parse(localStorage.getItem("orlando2027plan")||"[]"); plan = new Set(p);
   const al = JSON.parse(localStorage.getItem("orlando2027alts")||"{}"); if(al&&typeof al==="object"&&!Array.isArray(al)) alts = al;
 }catch(e){}
@@ -43,7 +43,7 @@ function updateBadge(){ const b = $("#plan-count"); if(b) b.textContent = plan.s
   document.querySelectorAll(".plan-n").forEach(x=>x.textContent = plan.size); }
 
 /* ---------- tabs: barra superior + navegación inferior + hoja "Más" (móvil) ---------- */
-const PRIMARY_TABS = ["itinerario","actividades","comida","miplan"];
+const PRIMARY_TABS = ["ahora","itinerario","actividades","comida","miplan"];
 function selectTab(name){
   document.querySelectorAll(".tab,.mnav-btn").forEach(b=>{
     if(b.dataset && b.dataset.tab===name) b.classList.add("active"); else b.classList.remove("active");
@@ -54,6 +54,7 @@ function selectTab(name){
   const panel = $("#tab-"+name);
   if(panel) panel.classList.add("active");
   if(name==="miplan") renderMiPlan();
+  if(name==="ahora") renderAhora();
   const sheet = $("#msheet"); if(sheet) sheet.hidden = true;
   window.scrollTo({top:0,behavior:"smooth"});
   /* tablets (768-999px): barra superior con scroll horizontal → centra la pestaña activa */
@@ -76,13 +77,13 @@ function initTabs(){
 
 /* ---------- configuración de grupo ---------- */
 function initGroup(){
-  const a=$("#g-adults"),k10=$("#g-kids10"),k3=$("#g-kids3");
-  a.value=group.adults; k10.value=group.kids10; k3.value=group.kids3;
+  const a=$("#g-adults"),k10=$("#g-kids10"),k3=$("#g-kids3"),h10=$("#g-h10"),h3=$("#g-h3"),ay=$("#g-ageyoung");
+  a.value=group.adults; k10.value=group.kids10; k3.value=group.kids3; h10.value=group.h10; h3.value=group.h3; ay.value=group.ageYoung;
   function refresh(){
-    group = {adults:+a.value||0, kids10:+k10.value||0, kids3:+k3.value||0};
+    group = {adults:+a.value||0, kids10:+k10.value||0, kids3:+k3.value||0, h10:Math.min(200,Math.max(90,+h10.value||150)), h3:Math.min(200,Math.max(80,+h3.value||110)), ageYoung:Math.min(17,Math.max(0,+ay.value||10))};
     saveState(); renderAll();
   }
-  [a,k10,k3].forEach(i=>i.addEventListener("change",refresh));
+  [a,k10,k3,h10,h3,ay].forEach(i=>i.addEventListener("change",refresh));
 }
 
 /* ---------- componentes HTML ---------- */
@@ -161,6 +162,15 @@ document.addEventListener("click", e=>{
   if(skp){ showF.park = skp.dataset.showpark; renderShows(); return; }
   const shp = e.target.closest("[data-sfhype]");
   if(shp){ snackF.hype = !snackF.hype; renderSnacks(); return; }
+  const nd = e.target.closest("[data-nowday]");
+  if(nd){ nowDay = nd.dataset.nowday; renderAhora(); return; }
+  const cd = e.target.closest("[data-ccday]");
+  if(cd){
+    const ci = DIAS.findIndex(x=>x.date===cd.dataset.ccday);
+    const card = document.querySelectorAll("#tab-itinerario .day-card")[ci];
+    if(card){ card.classList.remove("collapsed"); if(card.scrollIntoView){ try{ card.scrollIntoView({block:"start",behavior:"smooth"}); }catch(err){} } }
+    return;
+  }
   const dh = e.target.closest(".day-head");
   if(dh){ const card = dh.closest(".day-card"); if(card){ if(card.classList.contains("collapsed")) card.classList.remove("collapsed"); else card.classList.add("collapsed"); } return; }
   const tg = e.target.closest("[data-tabgo]");
@@ -203,7 +213,7 @@ function renderItinerario(){
     <div class="strat-filter"><span class="sf-label">🧭 Estrategia de día (8 días de parque):</span>
       <button class="btn btn-strat ${strat==="garantiza"?"on":""}" data-strat="garantiza">🎯 Atracción mayor garantizada</button>
       <button class="btn btn-strat ${strat==="cantidad"?"on":""}" data-strat="cantidad">📊 Mayor cantidad de atracciones</button>
-      <span class="sf-hint">Cada modo ordena sus ventanas de MENOR a MAYOR ocupación proyectada: la atracción con fila se ataca cuando la ocupación baja y el pico se absorbe con shows/indoor.</span></div></div>`;
+      <span class="sf-hint">Cada modo ordena sus ventanas de MENOR a MAYOR ocupación proyectada: la atracción con fila se ataca cuando la ocupación baja y el pico se absorbe con shows/indoor.</span></div>${ccStripHTML()}</div>`;
   const mobDays = !!(window.matchMedia && window.matchMedia("(max-width:767px)").matches);
   DIAS.forEach((d,i)=>{
     const hours = Object.entries(d.hours).map(([k,v])=>`<tr><td>${esc(PARQUES[k]||k)}</td><td>${esc(v)}</td></tr>`).join("");
@@ -332,13 +342,13 @@ function actCard(a){
     <p>${esc(a.desc)}</p>
     <div class="facts">
       <span>👶 ${a.minAge===0?"Toda edad":"Desde "+a.minAge+" años"}</span>
-      <span>📏 ${a.restr?esc(a.restr):"Sin restricción"}</span>
+      <span>📏 ${a.restr?esc(a.restr):"Sin restricción"}</span>${eligChip(a)}<span class="wait-est" title="Estimado offline: pico típico de mediodía con afluencia media">⏱️ pico ≈${waitRangePeak(a)} min</span>
       <span>🎢 ${thrillBar(a.thrill)}</span>
       <span>⏱️ ~${a.dur} min</span>
       <span>🌅 ${esc(a.best||"")}</span>
     </div>
     <div class="cost"><strong>👥 Grupo: ${money(gc)}</strong> · ${esc(a.note||"")} <span class="pp">(${perPerson(a)})</span></div>
-    ${a.tips?`<p class="tip">💡 ${esc(a.tips)}</p>`:""}
+    ${a.tips?`<p class="tip">💡 ${esc(a.tips)}</p>`:""}${eligNote(a)}
   </article>`;
 }
 function renderActividades(){
@@ -691,10 +701,175 @@ function renderPresupuesto(){
   if(rb) rb.addEventListener("click",()=>{ if(confirm("¿Restablecer todas las estimaciones?")){ budget={}; saves={}; localStorage.setItem("orlando2027budget","{}"); localStorage.setItem("orlando2027save","{}"); renderPresupuesto(); }});
 }
 
+/* ---------- v9: PERFIL · elegibilidad por estatura/edad + modelo de esperas (fusión Disney/Universal/TouringPlans) ---------- */
+function parseCm(r){ const m=/(\d+)\s*cm/i.exec(r||""); return m?+m[1]:null; }
+function eligibility(a){
+  const total = groupSize(), cm = parseCm(a.restr);
+  let ok10=true, ok3=true, why="";
+  if(cm!=null){
+    if((group.h10||0)<cm){ ok10=false; why="estatura mín. "+cm+" cm"; }
+    if(group.kids3>0 && (group.h3||0)<cm){ ok3=false; if(!why) why="estatura mín. "+cm+" cm"; }
+  }
+  if(a.minAge>0 && (group.ageYoung||0)<a.minAge){
+    ok10=false; ok3=false; why = why? why+" · ":""; why += "edad mín. "+a.minAge+" años";
+  }
+  const n = group.adults + (ok10?group.kids10:0) + (ok3?group.kids3:0);
+  return {n:Math.min(n,total), total, why, cm};
+}
+function eligChip(a){
+  const e=eligibility(a); if(!e.total) return "";
+  const cls = e.n>=e.total ? "elig-ok" : (e.n===0 ? "elig-no" : "elig-warn");
+  const tip = e.n>=e.total ? ("Todo el grupo cumple"+(e.why?" ("+e.why+")":"")) : (e.why||"restricción del grupo");
+  return `<span class="elig ${cls}" title="${esc(tip)}">👥 ${e.n}/${e.total} pueden</span>`;
+}
+function eligNote(a){
+  const e=eligibility(a); if(!e.total || e.n>=e.total) return "";
+  if(e.n===0) return `<p class="elig-off">🚫 Ninguno del grupo cumple${e.why?": "+esc(e.why):""} — revisa el plan B de esta atracción.</p>`;
+  return `<p class="elig-off">🔄 ${e.total-e.n} del grupo no cumple${e.why?" ("+esc(e.why)+")":""}: usa <strong>Rider Switch</strong> (Disney) / <strong>Child Switch</strong> (Universal) — el grupo entra, una persona se queda con quien no puede y después suben sin rehacer la fila.</p>`;
+}
+function round5(n){ return Math.max(5, Math.round(n/5)*5); }
+function occAt(day, hour){
+  const est = day && day.estrategias;
+  const st = est && (est[strat] || est.garantiza);
+  if(st && st.pasos){
+    for(let i=0;i<st.pasos.length;i++){
+      const parts = String(st.pasos[i].h).split("-");
+      const m1 = /^(\d{1,2}):(\d{2})/.exec(parts[0]||"");
+      const ini = m1? +m1[1] : 8;
+      const m2 = /^(\d{1,2}):(\d{2})/.exec((parts[1]||"").trim());
+      const fin = m2? +m2[1] : 24;
+      if(hour>=ini && hour<fin) return st.pasos[i].occ;
+    }
+  }
+  if(day && day.ocupacion) return day.ocupacion.pct;
+  return 60;
+}
+function waitBase(a){
+  if(a.thrill<=2 && a.cat.some(c=>/show|teatro|calle|animales/i.test(c))) return 10;
+  return [0,6,12,25,36,50][a.thrill] || 20;
+}
+function waitEst(a, day, hour){
+  const crowdF = 0.6 + 0.07*((day && day.crowd) || 7);
+  const hourF = 0.55 + occAt(day, hour==null?13:hour)/110;
+  const mid = round5(Math.min(90, Math.max(5, waitBase(a)*crowdF*hourF)));
+  return {mid, lo:Math.max(5, mid-10), hi:Math.min(120, mid+10)};
+}
+const AVG_DAY = {crowd:7, ocupacion:{pct:75}};
+function waitRangePeak(a){ const w = waitEst(a, AVG_DAY, 13); return w.lo+"-"+w.hi; }
+function showTimes(s){ const out=[], re=/(\d{1,2}):(\d{2})/g; let m; const t=String(s.times||""); while((m=re.exec(t))) out.push(+m[1]+(+m[2])/60); return out; }
+function mealAdvice(h){
+  let lunch, dinner;
+  if(h<11){ lunch="⏰ Ideal 11:00-12:00 — antes del pico 12:00-14:00"; dinner="⏰ Ideal 17:30-18:30 antes del pico 18:00-20:00"; }
+  else if(h<14){ lunch = h<12 ? "⚡ Ya: llega antes de 13:00 o espera a 14:00+ (pico 12-14)" : "⚡ Pico en curso: si hay fila, come a las 14:00+ o cambia de punto"; dinner="⏰ Ideal 17:30-18:30"; }
+  else if(h<17){ lunch="✅ Pico pasado: almorza tranquilo ahora"; dinner="⏰ Ideal 17:30-18:30"; }
+  else if(h<20){ lunch="✅ Ya pasó"; dinner = h<19 ? "⚡ Cena en pico: llega antes de 19:00 o después de 20:00" : "⚡ Última tanda: si lleno, cena tras 20:30"; }
+  else { lunch="✅ Ya pasó"; dinner="🌙 Última hora: cenas tardías, CityWalk o comida del hotel"; }
+  return {lunch, dinner};
+}
+function ccStripHTML(){
+  const chips = DIAS.map(d=>{
+    const pct = d.ocupacion ? d.ocupacion.pct : null;
+    const cls = d.crowd>=9 ? "c-hi" : d.crowd>=7 ? "c-md" : "c-lo";
+    return `<button class="cc-chip ${cls} ${d.date===HOY_ISO?"is-hoy":""}" data-ccday="${d.date}" title="${esc(d.label)} · multitud ${d.crowd}/10${pct!=null?" · ocupación "+pct+"%":""}"><b>${esc(d.label)}</b><i>${d.crowd}/10</i>${pct!=null?`<u>${pct}%</u>`:""}</button>`;
+  }).join("");
+  return `<div class="cc-strip" role="group" aria-label="Calendario de afluencia del viaje"><span class="cc-label">📊 Afluencia</span>${chips}<span class="cc-hint">toca un día para abrirlo ↓</span></div>`;
+}
+/* ---------- v9: estado del tablero "Ahora" ---------- */
+let nowDay = null, nowHour = null;
+function defaultNowDay(){
+  if(HOY_ISO>=VIAJE.inicio && HOY_ISO<=VIAJE.fin) return HOY_ISO;
+  const d = DIAS.find(x=>x.date>HOY_ISO);
+  return d ? d.date : DIAS[DIAS.length-1].date;
+}
+function defaultNowHour(){
+  if(HOY_ISO>=VIAJE.inicio && HOY_ISO<=VIAJE.fin){ const hh=new Date().getHours(); return Math.min(23,Math.max(7,hh)); }
+  return 10;
+}
+function chosenOption(d){
+  const ri = d.options.findIndex(o=>o.reco);
+  const i = (typeof alts[d.date]==="number" && d.options[alts[d.date]]) ? alts[d.date] : ri;
+  return d.options[i] || d.options[0];
+}
+function dayParks(d){ const o = chosenOption(d); return (o && o.parks) || d.parks || []; }
+function renderNowBody(){
+  const el = $("#now-body"); if(!el) return;
+  const d = DIAS.find(x=>x.date===nowDay) || DIAS[0];
+  const parks = dayParks(d), opt = chosenOption(d), h = nowHour;
+  const occ = d.ocupacion ? `<span class="now-occ ${d.ocupacion.pct>=80?"occ-hi":d.ocupacion.pct>=65?"occ-mid":"occ-lo"}">📊 ${d.ocupacion.pct}% ocupación (${esc(d.ocupacion.rango)})</span>` : "";
+  const hoursRows = parks.filter(p=>d.hours && d.hours[p]).map(p=>`<tr><td>${esc(PARQUES[p]||p)}</td><td>${esc(d.hours[p])}</td></tr>`).join("");
+  const dayCard = `<div class="now-card now-daycard"><h4>${esc(d.label)} · ${esc(d.theme)}</h4>
+    <div class="now-chips">${crowdDots(d.crowd)}${occ}${d.weather?`<span class="chip">🌡️ ${d.weather.hi}°/${d.weather.lo}° · 🌧️ ${d.weather.prob}%</span>`:""}</div>
+    ${hoursRows?`<table class="mini-table">${hoursRows}</table>`:`<p class="muted small">Día sin parque${parks.length?": "+esc(parks.map(p=>PARQUES[p]||p).join(" · ")):" — logística / día libre"}</p>`}
+    ${d.transport?`<p class="muted small">🚌 ${esc(d.transport)}</p>`:""}</div>`;
+  const planCard = `<div class="now-card"><h4>🧾 Plan elegido · ${esc(opt.title)}</h4>
+    <ol class="now-steps">${(opt.steps||[]).map(s=>`<li>${esc(s)}</li>`).join("")}</ol>
+    <a href="#" data-tabgo="itinerario">✏️ Comparar los planes del día</a></div>`;
+  const closed = a => /CERRAD/i.test(a.note||"") || a.best==="—";
+  const board = parks.length ? ACTIVIDADES.filter(a=>parks.indexOf(a.park)>=0 && !closed(a)).map(a=>({a,w:waitEst(a,d,h)})).sort((x,y)=>x.w.mid-y.w.mid) : [];
+  const top = board.slice(0,12);
+  const rows = top.map(o=>`<div class="now-row">
+      <div class="now-row-t"><strong>${esc(o.a.name)}</strong> <span class="chip park">${esc(PARQUES[o.a.park]||o.a.park)}</span></div>
+      <span class="now-wait ${o.w.mid>=50?"w-hi":o.w.mid>=30?"w-md":"w-lo"}">⏱️ ${o.w.lo}-${o.w.hi} min</span>${eligChip(o.a)}${planBtn(o.a.id)}</div>`).join("");
+  const ridesBox = parks.length ? `<div class="now-card now-wide"><h4>🎢 Ahora mismo · esperas estimadas a las ${String(h).padStart(2,"0")}:00</h4>
+    <p class="muted small">Ordenado de MENOR a MAYOR fila: sube lo barato ahora y deja los headliners para su franja baja. Modelo offline (emoción × afluencia del día × hora) — la espera <strong>real</strong> está en las apps oficiales cuando haya señal.</p>
+    ${rows || `<p class="muted">Sin atracciones registradas para los parques de hoy.</p>`}
+    ${board.length>top.length?`<a href="#" data-tabgo="actividades">Ver las ${board.length} atracciones del día con filtros →</a>`:""}</div>` : "";
+  const showList = SHOWS.filter(s=>parks.indexOf(s.park)>=0);
+  const upcoming=[], rolling=[];
+  showList.forEach(s=>{ const t=showTimes(s);
+    if(!t.length){ rolling.push(s); return; }
+    const nx=t.filter(x=>x>=h).sort((a,b)=>a-b)[0];
+    if(nx!=null) upcoming.push({s,nx});
+  });
+  upcoming.sort((a,b)=>a.nx-b.nx);
+  const showRows = upcoming.slice(0,6).map(o=>{
+    const hh=Math.floor(o.nx), mm=Math.round((o.nx-hh)*60), en=Math.round((o.nx-h)*60);
+    return `<li>🕐 <strong>${hh}:${String(mm).padStart(2,"0")}</strong> · ${esc(o.s.name)} <span class="mut">en ~${en} min · llegar ${esc(o.s.arrive)} · ${esc(o.s.seat)}</span>${walkLink(o.s)}</li>`;
+  }).join("");
+  const showsBox = showList.length ? `<div class="now-card"><h4>🎭 Próximos shows</h4>
+    ${showRows?`<ul class="tight">${showRows}</ul>`:`<p class="muted small">Ninguna función con hora conocida después de las ${String(h).padStart(2,"0")}:00 — confirma el horario del día en la app del parque.</p>`}
+    ${rolling.length?`<p class="muted small">🔁 Continuo/día completo: ${esc(rolling.slice(0,5).map(s=>s.name).join(" · "))}${rolling.length>5?"…":""}</p>`:""}</div>` : "";
+  const ids = (typeof COMIDA_DIA==="object" && COMIDA_DIA[d.date]) || [];
+  const food = ids.map(id=>COMIDA.find(r=>r.id===id)).filter(Boolean).slice(0,5);
+  const adv = mealAdvice(h);
+  const foodRows = food.map(r=>`<li>${SERVICE_ICON[r.service]||"🍴"} <strong>${esc(r.name)}</strong> <span class="mut">${esc(parkChip(r))} · 👥 ${money(groupCost(r))} grupo · 🥩 ${r.protein}/5</span> ${walkLink(r)}${resLink(r)}</li>`).join("");
+  const foodBox = `<div class="now-card"><h4>🍽️ Comida · cuándo llegar</h4>
+    <p class="now-meal"><strong>Almuerzo:</strong> ${esc(adv.lunch)}<br><strong>Cena:</strong> ${esc(adv.dinner)}</p>
+    ${foodRows?`<ul class="tight">${foodRows}</ul>`:`<p class="muted small">Sin recomendación de comida para hoy — mira la pestaña 🍗 Comida.</p>`}</div>`;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const venc = VENCIMIENTOS.map(v=>({v, dd:Math.round((new Date(v.f+"T12:00:00")-today)/86400000)}))
+    .filter(x=>x.dd>=0).sort((a,b)=>a.dd-b.dd).slice(0,3)
+    .map(x=>`<li class="${x.dd===0?"v-today":x.dd<=14?"v-soon":""}">${x.dd===0?"🔥 ¡HOY!":`⏳ en ${x.dd} día${x.dd===1?"":"s"}`} · ${esc(x.v.label)} <span class="mut">(${esc(x.v.f)})</span></li>`).join("");
+  const alertsBox = `<div class="now-card"><h4>⚠️ Alertas del día</h4>
+    ${((d.warnings||[]).slice(0,4).map(w=>`<p class="tip">⚠️ ${esc(w)}</p>`).join("")) || `<p class="muted small">Sin alertas especiales.</p>`}
+    ${(d.events||[]).slice(0,3).map(e=>`<p class="muted small">📌 ${esc(e)}</p>`).join("")}
+    <h5>📋 Preparación</h5><ul class="tight">${venc || `<li class="mut">Sin vencimientos próximos</li>`}<li><a href="#" data-tabgo="prep">Ver checklist completo 📋</a></li></ul></div>`;
+  el.innerHTML = `<div class="now-grid">${dayCard}${planCard}</div>${ridesBox}<div class="now-grid">${showsBox}${foodBox}${alertsBox}</div>
+    <p class="now-foot">🧭 Esperas y horarios = estimaciones históricas (datos oct-2026). En el parque, confirma tiempos en vivo en <a href="https://disneyworld.disney.go.com/" target="_blank" rel="noopener">My Disney Experience ↗</a> o <a href="https://www.universalorlando.com/" target="_blank" rel="noopener">Universal Orlando ↗</a> — esta pantalla funciona aunque no haya señal.</p>`;
+}
 /* ---------- arranque ---------- */
+function renderAhora(){
+  if(!nowDay || !DIAS.some(d=>d.date===nowDay)) nowDay = defaultNowDay();
+  if(nowHour==null) nowHour = defaultNowHour();
+  const chips = DIAS.map(d=>`<button class="now-daychip ${d.date===nowDay?"on":""} now-c${d.crowd>=9?"hi":d.crowd>=7?"md":"lo"}" data-nowday="${d.date}">${esc(d.label)}<i>${d.crowd}/10</i></button>`).join("");
+  const inTrip = HOY_ISO>=VIAJE.inicio && HOY_ISO<=VIAJE.fin;
+  $("#tab-ahora").innerHTML = `<div class="intro-card"><h2>📍 Ahora — el día, hora por hora</h2>
+    <p>Tu tablero estilo app de parque: <strong>esperas estimadas, próximos shows, cuándo llegar a comer y alertas</strong> — 100% offline${inTrip?"":" · en modo previsualización (el viaje aún no empieza)"}. Elige día y hora para planear, o úsalo así en el parque.</p></div>
+    <div class="now-controls"><div class="now-days">${chips}</div>
+      <div class="now-hour"><label for="now-hour">🕐 Hora: <output id="now-hour-out">${String(nowHour).padStart(2,"0")}:00</output></label>
+        <input type="range" id="now-hour" min="7" max="23" step="1" value="${nowHour}" aria-label="Hora del día"></div></div>
+    <div id="now-body"></div>`;
+  const sl = $("#now-hour");
+  if(sl && typeof sl.addEventListener==="function") sl.addEventListener("input", e=>{
+    nowHour = +e.target.value||10;
+    const out = $("#now-hour-out"); if(out) out.textContent = String(nowHour).padStart(2,"0")+":00";
+    renderNowBody();
+  });
+  renderNowBody();
+}
 function renderAll(){
   $("#group-total").textContent = `= ${groupSize()} personas (${group.adults+group.kids10} pagan tarifa adulta)`;
-  renderItinerario(); renderActividades(); renderComida(); renderSnacks(); renderShows();
+  renderAhora(); renderItinerario(); renderActividades(); renderComida(); renderSnacks(); renderShows();
   renderNYE(); renderCompras(); renderInfo(); renderMiPlan(); renderPrep(); renderPresupuesto(); renderCountdown(); updateBadge();
 }
 $("#btn-print").addEventListener("click", ()=>window.print());
