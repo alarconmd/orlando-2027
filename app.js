@@ -296,9 +296,9 @@ function renderInfo(){
     <p>Las ${CLAVES.length} reglas que hacen (o rompen) un viaje de 7 personas a Orlando en Nochevieja.</p></div><div class="claves-grid">`;
   h += CLAVES.map(c=>`<div class="clave-card"><h4>${esc(c.t)}</h4><p>${esc(c.d)}</p></div>`).join("");
   h += `</div><div class="intro-card"><h3>📋 Checklist de reservas</h3><ul class="tight">
-    <li><strong>Esta semana:</strong> NYE ya NO lleva reservas Disney (el plan Disney empieza el 3 de ene) — solo OpenTable si quieren mesa en Mythos o Toothsome.</li>
-    <li><strong>Cada día a las 6:00 AM (60 días antes):</strong> resto de cenas Disney: Cinderella's Royal Table, Space 220, Homecomin', Liberty Tree, Tusker House.</li>
-    <li><strong>30-60 días antes:</strong> Universal (Mythos, Bigfire, Toadstool) y Springs (Raglan Road, Boathouse) vía app/OpenTable.</li>
+    <li><strong>YA (verificado 22-oct):</strong> reservar NYE en el portal/app Universal — Mythos almuerzo ~13:00 (última 16:15 el 31-dic) + Bigfire cena 19:15 (16:00-21:30), NO en OpenTable. El plan Disney empieza el 3 de ene.</li>
+    <li><strong>1-nov, 6:00 AM ET:</strong> intentar California Grill (fuegos MK) para el 30-dic o el 2-ene: la ventana es de 60 días y se agota en minutos.</li><li><strong>Cada día a las 6:00 AM (60 días antes):</strong> resto de cenas Disney: Cinderella's Royal Table, Space 220, Homecomin', Liberty Tree, Tusker House.</li>
+    <li><strong>Universal YA:</strong> ventanas abiertas en el portal/app Universal — Mythos/Toothsome/Cowfish 180 d, Bigfire/Antojitos 90 d, Toadstool (Epic). <strong>En noviembre:</strong> Springs (Raglan Road, Boathouse) vía OpenTable.</li>
     <li><strong>Entradas Disney:</strong> comprar con anticipación (precio dinámico, NYE es lo más caro del año). Considerar Lightning Lane en MK/HS.</li>
     <li><strong>Antes de viajar:</strong> descargar apps, verificar cobertura del pase Universal, comprar hand warmers y power banks.</li>
   </ul></div>`;
@@ -560,8 +560,9 @@ function renderNYE(){
     <p class="tip">💡 ${esc(c.note)}</p></article>`).join("");
   const tl = NYE.timeline.map(t=>`<tr><td class="tl-time">${esc(t[0])}</td><td>${esc(t[1])}</td></tr>`).join("");
   $("#tab-nye").innerHTML = `<div class="intro-card"><h2>🎆 Estrategia Nochevieja · Jue 31 dic</h2><p>${esc(NYE.intro)}</p></div>
+    <h3 class="sect">🎯 Plan de comida NYE · verificado 22-oct (API oficial Universal, 7 personas)</h3><div class="intro-card"><ul class="tight">${NYE.plan.map(p=>`<li>${esc(p)}</li>`).join("")}</ul></div>
     <h3 class="sect">⚖️ IoA vs USF · medianoche gratis en CityWalk</h3><div class="options">${comp}</div>
-    <h3 class="sect">🍽️ Dónde cenar (OpenTable / app Universal — sin la batalla de reservas de Disney)</h3><div class="cards">${cenas}</div>
+    <h3 class="sect">🍽️ Dónde comer · estrategia verificada 22-oct (portal/app Universal — sin la batalla de reservas de Disney)</h3><div class="cards">${cenas}</div>
     <h3 class="sect">🕐 Cronograma del día</h3><table class="timeline">${tl}</table>
     <div class="day-grid">
       <div class="intro-card"><h4>🔥 Dónde calentarse (Universal)</h4><ul class="tight">${NYE.calor.map(c=>`<li>${esc(c)}</li>`).join("")}</ul></div>
