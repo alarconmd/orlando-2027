@@ -296,7 +296,7 @@ function renderInfo(){
     <p>Las ${CLAVES.length} reglas que hacen (o rompen) un viaje de 7 personas a Orlando en Nochevieja.</p></div><div class="claves-grid">`;
   h += CLAVES.map(c=>`<div class="clave-card"><h4>${esc(c.t)}</h4><p>${esc(c.d)}</p></div>`).join("");
   h += `</div><div class="intro-card"><h3>📋 Checklist de reservas</h3><ul class="tight">
-    <li><strong>YA (verificado 22-oct):</strong> reservar NYE en el portal/app Universal — Mythos almuerzo ~13:00 (última 16:15 el 31-dic) + Bigfire cena 19:15 (16:00-21:30), NO en OpenTable. El plan Disney empieza el 3 de ene.</li>
+    <li><strong>✅ HECHO (22-oct):</strong> NYE reservado en el portal Universal — Mythos almuerzo 31-dic 13:00 (ID 639283096121236992, última 16:15) + Bigfire cena 31-dic 19:15 (ID 639283093226406400, 16:00-21:30), 7 personas, ACTIVE. Modificar/cancelar: cuenta Universal o (407) 224-FOOD (3663), NO en OpenTable. El plan Disney empieza el 3 de ene.</li>
     <li><strong>1-nov, 6:00 AM ET:</strong> intentar California Grill (fuegos MK) para el 30-dic o el 2-ene: la ventana es de 60 días y se agota en minutos.</li><li><strong>Cada día a las 6:00 AM (60 días antes):</strong> resto de cenas Disney: Cinderella's Royal Table, Space 220, Homecomin', Liberty Tree, Tusker House.</li>
     <li><strong>Universal YA:</strong> ventanas abiertas en el portal/app Universal — Mythos/Toothsome/Cowfish 180 d, Bigfire/Antojitos 90 d, Toadstool (Epic). <strong>En noviembre:</strong> Springs (Raglan Road, Boathouse) vía OpenTable.</li>
     <li><strong>Entradas Disney:</strong> comprar con anticipación (precio dinámico, NYE es lo más caro del año). Considerar Lightning Lane en MK/HS.</li>
