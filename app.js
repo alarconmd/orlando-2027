@@ -428,6 +428,22 @@ function foodCard(r){
     ${r.tips?`<p class="tip">💡 ${esc(r.tips)}</p>`:""}
   </article>`;
 }
+/* v9.3: matriz buffets/ilimitados · menor precio + vista a fuegos + servicio hasta medianoche */
+function buffetCmpHTML(){
+  const rows = BUFFET_CMP.map(b=>{
+    const r = COMIDA.find(x=>x.id===b.id);
+    if(!r) return "";
+    return `<tr><td><strong>${esc(r.name)}</strong><br><span class="muted small">${esc(b.tag)}</span></td><td>${money(r.a)}<br><span class="muted small">grupo ${money(groupCost(r))}</span></td><td>${esc(b.cierre)}</td><td>${esc(b.nye)}</td><td>${esc(b.fuegos)}</td></tr>`;
+  }).join("");
+  return `<h3 class="sect">🥘🎆 Buffets e ilimitados · menor precio, vista a fuegos y ¿abierto hasta medianoche? <span class="muted small">(precios y horarios verificados en las páginas oficiales de Disney el 23-oct-2026)</span></h3>
+  <div class="intro-card"><ul class="tight">
+    <li><strong>🌙 Hasta medianoche:</strong> NINGÚN buffet verificado sirve hasta las 24:00 — el cierre más tarde es 22:00 ('Ohana y California Grill). Los horarios especiales del 31-dic se publican tarde (Disney ~mediados/finales de dic; Universal ~mediados de nov). California Grill (NO buffet) históricamente hace evento de NYE que pasa la medianoche: confirmar el 1-nov 6:00 AM ET al abrir la ventana de 60 días.</li>
+    <li><strong>💰 Menor precio:</strong> fuera de parques Golden Corral (~$19) y Cafe Mineiro (~$30, proteína/$ #1). Dentro de Disney, los buffets verificados más baratos: Biergarten (~$49), Boma y Cape May (rango oficial $35-59.99). Recuerda: los 7 pagan tarifa ADULTA (10+).</li>
+    <li><strong>🎆 Vista a fuegos:</strong> ningún buffet tiene vista directa verificada. Mejor combo buffet+fuegos: Chef Mickey's + plataforma de observación del piso 4 del Contemporary (mismo edificio). La referencia de vista es California Grill (piso 15, $99 fijo, descrito por Disney como una de las mejores experiencias con fuegos de WDW).</li>
+    <li><strong>🔎 Sin verificar online:</strong> Boston Lobster Feast (I-Drive) y las cadenas económicas bloquean la lectura automática de sus sitios (HTTP 403): confirmar precio y horario en Google o por teléfono el mismo día antes de ir.</li>
+  </ul></div>
+  <table class="timeline full"><tbody><tr><td><strong>Restaurante</strong></td><td><strong>$/adulto · grupo 7</strong></td><td><strong>Cierre normal</strong></td><td><strong>31-dic hasta 24:00</strong></td><td><strong>Vista a fuegos</strong></td></tr>${rows}</tbody></table>`;
+}
 function renderComida(){
   let list = COMIDA.filter(r=>
     (!foodF.zone || r.zone===foodF.zone) &&
@@ -440,6 +456,7 @@ function renderComida(){
   else list.sort((x,y)=>y.protein-x.protein || groupCost(x)-groupCost(y));
   $("#tab-comida").innerHTML = `<div class="intro-card"><h2>🍗 Comida & análisis proteína/$</h2>
     <p>${COMIDA.length} restaurantes puntuados por proteína por dólar (🥩1-5). Los 🏆 son los campeones proteína/$. Costos estimados para tu grupo de ${groupSize()}. Recuerda: 10+ paga adulto en casi todo.</p></div>`
+    + buffetCmpHTML()
     + foodFiltersHTML()
     + `<p class="count">${list.length} resultados · 🥡 rápido · 🍽️ mesa · 🥘 buffet · 👨‍👩‍👧 familiar · ☕ café/snack — 🚶 abre la ruta a pie en Google Maps · 📅 abre la reserva oficial</p><div class="cards">${list.map(foodCard).join("")}</div>`;
   $("#tab-comida").querySelectorAll("[data-f]").forEach(el=>{
