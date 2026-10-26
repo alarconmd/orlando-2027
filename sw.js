@@ -1,5 +1,5 @@
 /* Service Worker · Orlando 2027 — funciona 100% offline después de la primera visita */
-const CACHE = "orlando2027-v95";
+const CACHE = "orlando2027-v96";
 const SHELL = ["./","./index.html","./styles.css","./data.js","./app.js","./manifest.json","./icon.svg"];
 self.addEventListener("install", e=>{
   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()));
