@@ -293,11 +293,11 @@ function renderItinerario(){
 /* ---------- TAB: CLAVES ---------- */
 function renderInfo(){
   let h = `<div class="intro-card"><h2>ℹ️ Claves del viaje</h2>
-    <p>Las ${CLAVES.length} reglas que hacen (o rompen) un viaje de 7 personas a Orlando en Nochevieja.</p></div><div class="claves-grid">`;
+    <p>Las ${CLAVES.length} reglas que hacen (o rompen) un viaje de 7 personas a Orlando en Nochevieja (8 del 31-dic al 3-ene con el abuelo).</p></div><div class="claves-grid">`;
   h += CLAVES.map(c=>`<div class="clave-card"><h4>${esc(c.t)}</h4><p>${esc(c.d)}</p></div>`).join("");
   h += `</div><div class="intro-card"><h3>📋 Checklist de reservas</h3><ul class="tight">
-    <li><strong>✅ HECHO (22-oct):</strong> NYE reservado en el portal Universal — Mythos almuerzo 31-dic 13:00 (ID 639283096121236992, última 16:15) + Bigfire cena 31-dic 19:15 (ID 639283093226406400, 16:00-21:30), 7 personas, ACTIVE. Modificar/cancelar: cuenta Universal o (407) 224-FOOD (3663), NO en OpenTable. El plan Disney empieza el 3 de ene.</li>
-    <li><strong>1-nov, 6:00 AM ET:</strong> intentar California Grill (fuegos MK) para el 30-dic o el 2-ene: la ventana es de 60 días y se agota en minutos.</li><li><strong>Cada día a las 6:00 AM (60 días antes):</strong> resto de cenas Disney: Cinderella's Royal Table, Space 220, Homecomin', Liberty Tree, Tusker House.</li>
+    <li><strong>🔄 CAMBIO (26-oct):</strong> NYE ahora es EPCOT — tickets comprados y grupo de 8 (se suma el abuelo). Reservas Universal del 22-oct por resolver: Bigfire 19:15 cancelable GRATIS hasta las 19:05 del 31-dic; Mythos 13:00 NO cancelable/modificable → llamar al (407) 224-FOOD (3663) para intentar moverla al 2-ene con 8 personas.</li>
+    <li><strong>1-nov, 6:00 AM ET (EL día crítico):</strong> cena NYE en EPCOT para 8 — Le Cellier / Teppan Edo / Space 220, pidiendo la hora MÁS TARDÍA disponible. En segundo dispositivo: California Grill (fuegos MK) para el 30-dic o el 4-ene. Ambas ventanas se agotan en minutos.</li><li><strong>Cada día a las 6:00 AM (60 días antes):</strong> resto de cenas Disney: Cinderella's Royal Table, Homecomin', Liberty Tree, Tusker House.</li>
     <li><strong>Universal YA:</strong> ventanas abiertas en el portal/app Universal — Mythos/Toothsome/Cowfish 180 d, Bigfire/Antojitos 90 d, Toadstool (Epic). <strong>En noviembre:</strong> Springs (Raglan Road, Boathouse) vía OpenTable.</li>
     <li><strong>Entradas Disney:</strong> comprar con anticipación (precio dinámico, NYE es lo más caro del año). Considerar Lightning Lane en MK/HS.</li>
     <li><strong>Antes de viajar:</strong> descargar apps, verificar cobertura del pase Universal, comprar hand warmers y power banks.</li>
@@ -576,13 +576,13 @@ function renderNYE(){
     <div class="facts"><span>💵 ${esc(c.pp)} pp</span><span>👥 ${esc(c.grupo)}</span><span>📅 ${esc(c.res)}</span></div>
     <p class="tip">💡 ${esc(c.note)}</p></article>`).join("");
   const tl = NYE.timeline.map(t=>`<tr><td class="tl-time">${esc(t[0])}</td><td>${esc(t[1])}</td></tr>`).join("");
-  $("#tab-nye").innerHTML = `<div class="intro-card"><h2>🎆 Estrategia Nochevieja · Jue 31 dic</h2><p>${esc(NYE.intro)}</p></div>
-    <h3 class="sect">🎯 Plan de comida NYE · verificado 22-oct (API oficial Universal, 7 personas)</h3><div class="intro-card"><ul class="tight">${NYE.plan.map(p=>`<li>${esc(p)}</li>`).join("")}</ul></div>
-    <h3 class="sect">⚖️ IoA vs USF · medianoche gratis en CityWalk</h3><div class="options">${comp}</div>
-    <h3 class="sect">🍽️ Dónde comer · estrategia verificada 22-oct (portal/app Universal — sin la batalla de reservas de Disney)</h3><div class="cards">${cenas}</div>
+  $("#tab-nye").innerHTML = `<div class="intro-card"><h2>🎆 Estrategia Nochevieja · Jue 31 dic en EPCOT (8 personas)</h2><p>${esc(NYE.intro)}</p></div>
+    <h3 class="sect">🎯 Plan NYE · actualizado 26-oct-2026 (fuentes oficiales Disney/Universal, 8 personas)</h3><div class="intro-card"><ul class="tight">${NYE.plan.map(p=>`<li>${esc(p)}</li>`).join("")}</ul></div>
+    <h3 class="sect">⚖️ Dónde cenar en EPCOT · carnes y la reserva más tardía</h3><div class="options">${comp}</div>
+    <h3 class="sect">🍽️ Cena NYE en EPCOT · verificado en páginas oficiales Disney el 26-oct-2026</h3><div class="cards">${cenas}</div>
     <h3 class="sect">🕐 Cronograma del día</h3><table class="timeline">${tl}</table>
     <div class="day-grid">
-      <div class="intro-card"><h4>🔥 Dónde calentarse (Universal)</h4><ul class="tight">${NYE.calor.map(c=>`<li>${esc(c)}</li>`).join("")}</ul></div>
+      <div class="intro-card"><h4>🔥 Dónde calentarse (EPCOT)</h4><ul class="tight">${NYE.calor.map(c=>`<li>${esc(c)}</li>`).join("")}</ul></div>
       <div class="intro-card"><h4>🧤 Tips de supervivencia</h4><ul class="tight">${NYE.tips.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>
     </div>`;
 }
