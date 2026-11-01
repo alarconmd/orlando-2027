@@ -404,3 +404,21 @@ body{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
 }
 @media print{.now-controls{display:none}}
 
+/* ===== v10: cronograma NYE interactivo + personalización por edad ===== */
+.nye-lock{margin:0 0 10px;padding:10px 14px;border:1px solid #7a2f2f;background:#2a1420;color:#ffced6;border-radius:10px;font-size:.88rem;line-height:1.5}
+.nye-tl tr.nye-row{cursor:pointer}
+.nye-tl tr.nye-row:hover td{background:rgba(122,85,180,.07)}
+.nye-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:7px;align-items:center}
+.lock-dot{margin-left:6px}
+.chip.lock-chip{background:#3a1620;color:#ff9aa8;border:1px solid #8a3a4a;font-weight:700}
+.chip.buf-chip{background:#2b2340;color:#cfc2ff;border:1px solid #5a4a9a}
+.now-tag{display:inline-block;background:#f5a623;color:#20140a;border-radius:6px;padding:1px 7px;font-size:.68rem;font-weight:800;vertical-align:middle;margin-left:6px}
+tr.tl-now td{background:rgba(245,166,35,.10)!important}
+tr.nye-det td{background:rgba(20,16,34,.5);padding:10px 14px 14px}
+tr.nye-det h6{margin:6px 0 4px}
+.btn-mini{background:transparent;border:1px solid #444;color:#8ab4ff;border-radius:8px;padding:3px 10px;font-size:.74rem;cursor:pointer;font-weight:600}
+.btn-mini:hover{background:rgba(138,180,255,.12)}
+.perfil-card h4{margin-bottom:6px}
+.perfil-card ul{margin-top:6px}
+@media(max-width:700px){.nye-lock{font-size:.8rem;padding:9px 11px}.nye-actions{gap:6px}}
+

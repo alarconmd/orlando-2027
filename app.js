@@ -125,6 +125,9 @@ document.addEventListener("click", e=>{
   if(sf){ const m = sf.dataset.strat; if(m==="garantiza"||m==="cantidad"){ strat = m; localStorage.setItem("orlando2027strat", strat); renderItinerario(); } return; }
   const rs = e.target.closest("#reset-alts");
   if(rs){ alts = {}; localStorage.setItem("orlando2027alts","{}"); renderItinerario(); return; }
+  /* v10: filas expandibles del cronograma NYE (atracciones + decisiones en tiempo real) */
+  const ny = e.target.closest("[data-nye]");
+  if(ny){ const row = document.getElementById("nyed"+ny.dataset.nye); if(row){ row.hidden = !row.hidden; ny.setAttribute("aria-expanded", String(!row.hidden)); } return; }
   /* ---------- v8 móvil: navegación, hoja Más, filtros (chips/toggle/reset), acordeón de días ---------- */
   const mr = e.target.closest("#mnav-more");
   if(mr){ const s = $("#msheet"); if(s) s.hidden = !s.hidden; return; }
@@ -575,12 +578,32 @@ function renderNYE(){
     <div class="chips link-chips">${c.place?`<a class="chip walk" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(c.place)}&travelmode=walking" target="_blank" rel="noopener" title="Abrir la ruta a pie en Google Maps">🚶 Ir caminando</a>`:""}${c.book?`<a class="chip res" href="${esc(c.book)}" target="_blank" rel="noopener" title="Reservar en la página oficial (si tienes la app instalada, se abre directo en ella)">📅 Reservar</a>`:""}</div>
     <div class="facts"><span>💵 ${esc(c.pp)} pp</span><span>👥 ${esc(c.grupo)}</span><span>📅 ${esc(c.res)}</span></div>
     <p class="tip">💡 ${esc(c.note)}</p></article>`).join("");
-  const tl = NYE.timeline.map(t=>`<tr><td class="tl-time">${esc(t[0])}</td><td>${esc(t[1])}</td></tr>`).join("");
+  const d31 = DIAS.find(x=>x.date==="2026-12-31") || (typeof AVG_DAY!=="undefined"?AVG_DAY:{crowd:8});
+  const t2m = k=>{ const p=String(k).split(":"); let h=+p[0]; const m=+(p[1]||0); if(h<4) h+=24; return h*60+m; };
+  const nowD = new Date();
+  const isNYE = nowD.getFullYear()===2026 && nowD.getMonth()===11 && nowD.getDate()===31;
+  const nowM = isNYE ? (nowD.getHours()<4 ? nowD.getHours()*60+nowD.getMinutes()+1440 : nowD.getHours()*60+nowD.getMinutes()) : null;
+  const det = NYE.pasosDet || {};
+  let curIdx = -1;
+  if(nowM!=null) NYE.timeline.forEach((t,i)=>{ if(t2m(t[0])<=nowM) curIdx=i; });
+  const din = nowM!=null && nowM < t2m("18:10");
+  const lockBanner = `<div class="nye-lock">🔒 <strong>Reserva protegida: 18:10 en La Crêperie</strong> (Ivan #356305081685 · Lina 18:20 #356305087171) — alarma del grupo <strong>17:40</strong> · host stand 17:55${din?` · ⏱ <strong>${Math.floor((t2m("18:10")-nowM)/60)} h ${String((t2m("18:10")-nowM)%60).padStart(2,"0")} min</strong> para tu cena`:``}</div>`;
+  const tl = NYE.timeline.map((t,i)=>{
+    const d = det[t[0]]; const tag = i===curIdx ? ` <span class="now-tag">AHORA</span>` : "";
+    if(!d) return `<tr class="${i===curIdx?"tl-now":""}"><td class="tl-time">${esc(t[0])}${tag}</td><td>${esc(t[1])}</td></tr>`;
+    const hour = d.h!=null ? d.h : t2m(t[0])/60;
+    const atr = (d.atr||[]).map(([nm,why])=>{ const a=ACTIVIDADES.find(x=>x.name===nm); const w=a?waitEst(a,d31,hour):null;
+      return `<li><strong>${esc(nm)}</strong>${w?` <span class="wait-est">⏱ ~${w.lo}-${w.hi} min</span>`:""}<br><span class="mut small">${esc(why)}</span></li>`; }).join("");
+    const dec = (d.dec||[]).map(x=>`<li>${esc(x)}</li>`).join("");
+    return `<tr class="nye-row ${i===curIdx?"tl-now":""}" data-nye="${i}" aria-expanded="false"><td class="tl-time">${esc(t[0])}${tag}${d.lock?` <span class="lock-dot">🔒</span>`:""}</td><td>${esc(t[1])}
+      <div class="nye-actions">${d.lock?`<span class="chip lock-chip">${esc(d.lock)}</span>`:""}${d.buf?`<span class="chip buf-chip">⏱ ${esc(d.buf)}</span>`:""}<button class="btn-mini" type="button">Recomendaciones ▾</button></div></td></tr>
+    <tr class="nye-det" id="nyed${i}" hidden><td colspan="2">${atr?`<h6 class="pro-t">🎢 Mejores atracciones en este tramo</h6><ul class="tight">${atr}</ul>`:""}${dec?`<h6 class="pro-t">🧭 Decisiones en tiempo real</h6><ul class="tight">${dec}</ul>`:""}</td></tr>`;
+  }).join("");
   $("#tab-nye").innerHTML = `<div class="intro-card"><h2>🎆 Estrategia Nochevieja · Jue 31 dic en EPCOT (8 personas)</h2><p>${esc(NYE.intro)}</p></div>
     <h3 class="sect">🎯 Plan NYE · actualizado 26-oct-2026 (fuentes oficiales Disney/Universal, 8 personas)</h3><div class="intro-card"><ul class="tight">${NYE.plan.map(p=>`<li>${esc(p)}</li>`).join("")}</ul></div>
     <h3 class="sect">⚖️ Dónde cenar en EPCOT · carnes y la reserva más tardía</h3><div class="options">${comp}</div>
     <h3 class="sect">🍽️ Cena NYE en EPCOT · verificado en páginas oficiales Disney el 26-oct-2026</h3><div class="cards">${cenas}</div>
-    <h3 class="sect">🕐 Cronograma del día</h3><table class="timeline">${tl}</table>
+    <h3 class="sect">🕐 Cronograma del día · interactivo (toca cada fila para las recomendaciones)</h3>${lockBanner}<table class="timeline full nye-tl">${tl}</table>
     <div class="day-grid">
       <div class="intro-card"><h4>🔥 Dónde calentarse (EPCOT)</h4><ul class="tight">${NYE.calor.map(c=>`<li>${esc(c)}</li>`).join("")}</ul></div>
       <div class="intro-card"><h4>🧤 Tips de supervivencia</h4><ul class="tight">${NYE.tips.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>
@@ -620,6 +643,8 @@ function renderMiPlan(){
     <span><strong>${money(groupCost(i))}</strong> <button class="btn btn-plan in-plan" data-plan="${i.id}">✖</button></span></li>`;
   $("#tab-miplan").innerHTML = `<div class="intro-card"><h2>⭐ Mi Plan · ${groupSize()} personas</h2>
     <p>Tus selecciones se guardan en este navegador (offline, sin cuenta). Costos estimados para tu grupo configurado arriba.</p></div>
+    <h3 class="sect">👥 Personalización por edad</h3>
+    <div class="cards">${(typeof PERFILES==="object"&&PERFILES||[]).map(p=>`<article class="card perfil-card"><h4>${esc(p.ic)} ${esc(p.t)}</h4><div class="chips"><span class="chip">${esc(p.dias)}</span></div><ul class="tight">${(p.pts||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></article>`).join("")}</div>
     ${items.length===0?`<div class="intro-card"><p>Aún no has agregado nada. Ve a 🎢 Actividades o 🍗 Comida y marca ⭐ Mi Plan.</p></div>`:""}
     ${acts.length?`<h3 class="sect">🎢 Actividades (${acts.length})</h3><ul class="plan-list">${acts.map(row).join("")}</ul>`:""}
     ${foods.length?`<h3 class="sect">🍗 Comida (${foods.length})</h3><ul class="plan-list">${foods.map(row).join("")}</ul>`:""}
